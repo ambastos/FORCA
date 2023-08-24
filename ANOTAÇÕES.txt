@@ -1,0 +1,44 @@
+ ok - ** Quando tento completar automaticamente as letras as vezes 
+	body fica vermelho.
+ ok - ** quando se clica duas vezes numa palavra errada ele considera
+      o erro novamente
+ ok - ** Esconder elementos indesejaveis
+ ok - ** ao apagar uma letra ela nao some
+
+
+ ok - ** Ao errar e ser enforcado, o jogo da game over
+        com atraso de uma etapa(o cara ta enforcado e 
+		nao da game over ainda)
+
+** Colocar um status no jogo: started, over. Se for over a pessoa nao 
+podera fazer nada alem de clicar em 'restart' ou pressionar
+espaco;
+
+** Quando o game reiniciar, ele nao tira a frase 'You are dead' e nao
+libera as letras novamente. O reset tem de:
+     * Mudar o status de todos os tracejos e caixa de digitacao
+     * Mudar o status do jogo para started
+
+** Testar o restart(clicando de novo(apos jogo pronto)
+** Ainda nao esta bem alinhado os elementos do enforcado
+** Colocar fundo transparente na imagem     
+
+Melhorias futuras:
+
+** Colocar algumas dicas(Numa pasta ou arquivo, todas as dicas possives e
+imagens ao lado para a pessoa tentar adivinhar). Talvez a melhor 
+solucao seria um arquivo de configuracao que desse todas as dicas na pasta
+e se a pessoa perdesse a paciencia, a solucao
+
+** Outra possibilidade seria de ter varias perguntas, e cada pergunta fosse
+uma pasta com todos os arquivos de dicas e a resposta, ai o sistema
+ou escolheria aleatoriamente as perguntas, ou teria temas/assuntos 
+possiveis relacionado aquela pergunta(talvez usando tags para a 
+categoria. Exemplo: Musica, artista, novela, local, pessoa)
+
+** Fazer funcionar em um celular...
+** Pthyton roda no android.
+
+ 
+
+ ** Zipar tudo 
