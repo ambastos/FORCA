@@ -8,6 +8,7 @@ FORCA = function() {
 	this.completed = false
 	this.audio
 	this.letters
+	this.currentTracejo = null
 	this.incorrects = {}
   
 	this.init = function() {
@@ -37,20 +38,26 @@ FORCA = function() {
 		var title = "Clique aqui para iniciar"
 		$("#play").css("left", 400).css("top", 200).attr("title",title).show()
 		$("#play").click(
-		function() {
-			F.start()
-		}
+			function() {
+				F.start()
+			}
 		)	  
 
-		$(".text").focusout(
-		  function(){	  	
+		$(".text").focus(function(){
+			$(this).addClass("focused")
+		})
+
+		$(".text").focusout(function(){		  
 				_TR = $(this)
+				_TR.removeClass("focused")					  			
 				//window.setTimeout(function(){
-					F._changeText(_TR.val())	  			
+					F._changeText(_TR.val())						
+					_TR.hide()
 				//},50)	  		
 		  }
 		)
 	}
+
 	this._setUpTracos = function() {
 		var width = $(".traco").width()
 		var cWidth = 0.8
@@ -83,6 +90,12 @@ FORCA = function() {
 	}
   
 	this._getLetters = function() {
+		//Letras validas(char code)
+		//0-9 = 48-57
+		//A-Z = 65-90
+		//Ver outros char codes de simbolos principais 
+		//
+
 		var letters = ""
 		if (localStorage && localStorage.word) {
 			letters = localStorage.word.split(" ")
@@ -126,22 +139,28 @@ FORCA = function() {
 		else
 			sp.addClass("tracejo")	
 		sp.attr("index", i)
-		sp.attr("tabIndex", i+2)
+		if (!isSpace)
+			sp.attr("tabIndex", i+2)
 		var _this = this
-		sp.click(function(ev) {		
+		sp.click(function(ev) {	
+				if (isSpace)	
+					return false
 				_SP = this
 				//window.setTimeout(function(){
+					_this.currentTracejo = sp
 					_this._showTextLetter(_SP) 
 				//},20)
-		}).keydown(function(k){
+		}).keydown(function(event){
 			_SP = this
-			let keyCode = k.keyCode
+			let keyCode = event.keyCode
+			let shiftKey = event.shiftKey
 
 			let keyName = ""
-			if (k.originalEvent.code)
-				keyName = k.originalEvent.code.replace("Key", "")
+			if (event.originalEvent.code)
+				keyName = event.originalEvent.code.replace("Key", "")
  
 			window.setTimeout(()=>{
+				let tracejoIndex = parseInt($(_SP).attr("index"))
 				if (keyCode) {
 					switch(keyCode) {
 						case 38://Seta pra cima
@@ -150,26 +169,32 @@ FORCA = function() {
 						case 37:
 							//Volta para a anterior(se houver)
 							console.log('seta a esquerda')
-							//_this._showTextLetter(_SP, keyCode)
+							_this._goToPreviousTracejo()
 							break;
 						case 18: //alt+TAB
-							console.log("tab")	
+							console.log("tab")								
 						case 9: //TAB		
-							console.log("tab")	
+							console.log("tab")
+							if (shiftKey) {
+								_this._goToPreviousTracejo()	
+								break;
+							}
 						case 13: //Enter	
-							console.log("enter")	
+							console.log("enter")
 						case 39:
 							//Avanca	
 							console.log('seta a direita')
-							//_this._showTextLetter(_SP, keyCode)
+							_this._goToNextTracejo()
 							break;
 						default:
 							if (keyCode >= 65 && keyCode <=90) {
+								if (isSpace)
+									return false
 								console.log("tecla: ",keyName)	
+								_this.currentTracejo = sp								
 								_this._showTextLetter(_SP, keyName) 
 							}
 					}
-		
 				}
 				 				
 			},50)			
@@ -180,6 +205,9 @@ FORCA = function() {
 
 		var text = $(".text")
 		tracejo = $(tracejo)
+		//muda o tabindex do .texto para corrigir tabulacao
+		let tabindex = parseInt(tracejo.attr("tabindex"))
+		text.attr("tabindex", tabindex)
 
 		var top = tracejo.offset().top
 
@@ -195,13 +223,16 @@ FORCA = function() {
 		text.css("top", tTop).css("left", tLeft)	
 		text.appendTo(tracejo).show()
 
+		
 		this._setTextAndSelectIt(text,tracejo) 
 
 		text.focus()
 
 		//Se alguma tecla foi apertada
-		if (keyName) 
+		if (keyName) {
 			text.val(keyName) 		
+			text.hide()
+		}
 		
 	}
 
@@ -228,7 +259,7 @@ FORCA = function() {
 		sp.find(".letra").remove()
 		//verifica se nao tem a letra e apaga 
 
-		text.appendTo(document.body)
+		//text.appendTo(document.body)
 
 		var index = parseInt(sp.attr("index"))
 		var correct = isCorrect(index,txt)
@@ -242,7 +273,8 @@ FORCA = function() {
 
 		this._configNLetterImage(imgL, sp)
 
-		$(".text").hide()
+		//$(".text").hide()
+		console.log("change text")
 
 		this.tryToComplete()
 
@@ -313,7 +345,61 @@ FORCA = function() {
 			}
 		}	
 	}
-	
+
+	this._goToNextTracejo =  function() {	
+		let index = parseInt(this.currentTracejo.attr("index"))		
+		return this.__goToValidTracejo(index, 1)
+	}
+
+	this._goToPreviousTracejo =  function() {
+		let index = parseInt(this.currentTracejo.attr("index"))
+		return this.__goToValidTracejo(index, -1)
+	}
+
+	this.__goToValidTracejo = function(index, direction) {		
+		
+		//Oculta a caixa de texto .text
+		$(".text").hide()
+		let tracejos = $(`#letters>span`)
+		let tracejo = null
+		if (direction == 1) {
+			if (index == this.letters.length-1)
+				return this.__goToValidTracejo(0, 0)
+			for (let i = index + 1; i < tracejos.length; i++) {
+				let $tr = tracejos.eq(i)
+				if ($tr.hasClass("tracejo")) {
+					tracejo = $tr
+					break
+				}
+			}
+		}else if (direction == -1) {
+			if (index == 0)
+				return this.__goToValidTracejo(this.letters.length-1, 0)
+			for (let i = index - 1; i > -1; i--) {
+				let $tr = tracejos.eq(i)
+				if ($tr.hasClass("tracejo")) {
+					tracejo = $tr			
+					break
+				}
+			}
+		}else {
+			let trs = tracejos.filter(`[index=${index}]`)
+			if (trs.length > 0) {
+				tracejo = trs.eq(0)
+			}
+		}
+			
+		window.setTimeout(()=>{
+			if (tracejo != null) {
+				this.currentTracejo = tracejo
+				$(".text").show()
+				this._showTextLetter(tracejo)
+			}
+		}, 50)		
+		return tracejo
+	}
+
+		
 	this.tryToComplete = function() {
 		var letters = $("#letters>span").not(".space")
 		var numbers = letters.length
