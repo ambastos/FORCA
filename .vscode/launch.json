@@ -8,7 +8,7 @@
             "type": "chrome",
             "request": "launch",
             "name": "Open FORCA.HTM",
-            "file": "/home/ambastos/Projects/FORCA/FORCA.HTM"
+            "file": "/home/ambastos/Projects/0 - Meus/FORCA/FORCA.HTM"
         }
     ]
 }
