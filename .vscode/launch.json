@@ -3,12 +3,20 @@
     // Hover to view descriptions of existing attributes.
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
+    /*"configurations": [
+        {            
+            "type": "chrome",
+            "name": "Open FORCA.HTM",
+            "request": "launch",
+            "cwd": "google-chrome /home/ambastos/projects/0 - Meus/FORCA/FORCA.HTM",            
+        }
+    ],*/
     "configurations": [
-        {
+        {            
             "type": "chrome",
             "request": "launch",
             "name": "Open FORCA.HTM",
-            "file": "/home/ambastos/Projects/0 - Meus/FORCA/FORCA.HTM"
+            "file": "/home/ambastos/projects/0 - Meus/FORCA/FORCA.HTM"            
         }
     ]
 }

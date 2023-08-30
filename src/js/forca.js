@@ -482,10 +482,11 @@ FORCA = function() {
 		this._montaGuy()
 	}
 
-	this.reset = function() {
-		
+	this.reset = function() {		
 		this.started = true
 		this.completed = false  	
+		this.over = false
+		this.hideMessage()
 	}	
 
 //O Enforcado
@@ -597,7 +598,8 @@ FORCA = function() {
 			g.slideDown()
 			h.setStage(h.stage+1)
 
-			//descomentar
+			//Se nao tiver mais partes do enforcado, entao e porque 
+			//ele morreu
 			if (!hasNext()) {		
 				return this.death()
 			}

@@ -1,3 +1,5 @@
+ERROS SOLUCIONADOS:
+
  ok - ** Quando tento completar automaticamente as letras as vezes 
 	body fica vermelho.
  ok - ** quando se clica duas vezes numa palavra errada ele considera
@@ -10,20 +12,27 @@
         com atraso de uma etapa(o cara ta enforcado e 
 		nao da game over ainda)
 
-** Colocar um status no jogo: started, over. Se for over a pessoa nao 
+ok - ** Colocar fundo transparente na imagem     
+
+ok - ** Quando o game reiniciar, ele nao tira a frase 'You are dead' 
+
+ok - ** Colocar um status no jogo: started, over. Se for over a pessoa nao 
 podera fazer nada alem de clicar em 'restart' ou pressionar
 espaco;
 
-** Quando o game reiniciar, ele nao tira a frase 'You are dead' e nao
-libera as letras novamente. O reset tem de:
-     * Mudar o status de todos os tracejos e caixa de digitacao
-     * Mudar o status do jogo para started
+ok - ** O jogo não coloca started como false ao acabar 
 
-** Testar o restart(clicando de novo(apos jogo pronto)
+ok - ** Testar o restart(clicando de novo(apos jogo pronto)
+
+
+DEFEITOS: 
+
 ** Ainda nao esta bem alinhado os elementos do enforcado
-** Colocar fundo transparente na imagem     
+
 
 Melhorias futuras:
+
+** Colocar uma 'estiqueta' ao lado (clique aqui para o jogo começar)
 
 ** Colocar algumas dicas(Numa pasta ou arquivo, todas as dicas possives e
 imagens ao lado para a pessoa tentar adivinhar). Talvez a melhor 
