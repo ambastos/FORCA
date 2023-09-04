@@ -276,8 +276,12 @@ FORCA = function() {
 		//$(".text").hide()
 		console.log("change text")
 
-		this.tryToComplete()
+		let completed = this.tryToComplete()
 
+		//Se tiver correto, tenta ir pro proximo tracejo
+		if (correct && !completed ) {
+			this._goToNextTracejo()
+		}
 	}
 
 	this._setTextToSpan = function(sp,txt) {
@@ -454,10 +458,12 @@ FORCA = function() {
 
 		setTimeout(toExecute1, 500)
 
+		return this.completed
 	}
 
 	this.markAsNotCompleted = function()  {
 		this.completed = false
+		return this.completed
 	}
 
 	this.start = function() {
@@ -472,11 +478,21 @@ FORCA = function() {
 	this._start = function() {
 		this.reset()
 		
-		$("#forca").show()
+		let forca = $("#forca")
+		forca.show()
 		$("#top>td").show(1000)
 		this._letterSpaces() 
-		$("#enforcados>img").hide()
-		$("#enforcado").show()
+		//Configura o enforcado e a forca
+		let enforcado = $("#enforcado")
+		enforcado.find("img").hide()
+		enforcado.show()
+		enforcado.css("position", "absolute")
+		let posTop = forca.offset().top + 40 //40 pixels do pino da forca
+		let posLeft = forca.offset().left + forca.width() - 
+			enforcado.width() * 0.8
+		enforcado.css("top", posTop).css("left", posLeft)
+
+
 		var top = "Complete a palavra abaixo para a surpresa."
 		$("#top>td").html(top)
 		this._montaGuy()
@@ -497,7 +513,8 @@ FORCA = function() {
 			all:  ["head","corpo","bracos","pernas","pes","cabelo","olhos","nariz","boca","rola","checa",
 						"tetas"],
 			//em percentual a mais em relacao a parte anterior							
-			offSets: [100,100, -8, 90, 100,-600,50,100,100,-505,-505,-830],	
+			offSets: [100,100, -900, 90, 100,-600,50,100,100,-505,-505,-830],	
+			middles: [0.5,0.5,0.45,0.54,0.54,0.488,0.517,0.48,0.4138,0.517,0.483,0.5],
 			init: function() {
 				var ft = function(a,b,c){
 					if (F.gu.gender == MALE) {
@@ -536,20 +553,26 @@ FORCA = function() {
 				return this[pt]
 			},
 			getOffset: function() {
+				let forca = $("#forca")
+				
 				var enf = $("#enforcado")
 				var eTop = enf.offset().top
 				var eLeft = enf.offset().left
 				var eWidth = enf.width()
 				var eHeight = enf.height()	
-				var eMiddle = eLeft + (eWidth/2)
+				//var eMiddle = eLeft + (eWidth/2)
+				//var eMiddle = (eWidth * this.middles[this.stage])		
 				
 				var g = this.get()
 				if (!g)
 					return null
 				
-				var percent = 1.05
-				var top = (120) *  percent
-				var left = (eMiddle - (g.width() / 2)) 
+				var percent = 1.00
+				var top = (eTop) *  percent
+				//var left = (eMiddle - (g.width() / 2)) 
+				let left = forca.offset().left + forca.width() - 
+					(g.width() * this.middles[this.stage])
+				
 
 				var offSet = this.offSets[this.stage]
 				var iP = this.stage -  Math.ceil(Math.abs(offSet /100))
